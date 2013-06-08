@@ -84,11 +84,6 @@ spa.chat = (function() {
 	// ----------BEGIN UTILITY METHODS----------
 	
 	function getEmSize(el) {
-		console.log("In getEmSize, getComputedStype(el, '') is: ");
-		var test1 = getComputedStyle(el, '');
-		console.log(test1);
-		console.log(test1.fontSize);
-		console.log(test1.fontSize.match(/(\d+)px/)[1]);
 		return Number(
 			getComputedStyle(el, '').fontSize.match(/(\d+)px/)[1]
 		);
@@ -123,8 +118,6 @@ spa.chat = (function() {
 		var opened_height;
 		
 		px_per_em = getEmSize(jqueryMap.$slider.get(0));
-		console.log('In setPxSizes() function, px_per_em is: ');
-		console.log(px_per_em);
 		
 		window_height_em = Math.floor(
 				($(window).height() / px_per_em) + 0.5
@@ -132,9 +125,6 @@ spa.chat = (function() {
 		
 		opened_height = window_height_em > configMap.window_height_min_em ?
 				configMap.slider_opened_em : configMap.slider_opened_min_em;
-		
-		console.log('In setPxSizes, opened_height is: ');
-		console.log(opened_height);
 		
 		stateMap.px_per_em = px_per_em;
 		stateMap.slider_closed_px = configMap.slider_closed_em * px_per_em;
