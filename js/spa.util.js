@@ -47,8 +47,6 @@ spa.util = (function() {
 	// Returns: true
 	// Throws: Exception if input key is not allowed.
 	setConfigMap = function(arg_map) {
-		console.log('In setConfigMap, arg_map is: ');
-		console.log(arg_map);
 		var input_map = arg_map.input_map;
 		var settable_map = arg_map.settable_map;
 		var config_map = arg_map.config_map;
@@ -56,8 +54,6 @@ spa.util = (function() {
 		var error;
 		
 		for (key_name in input_map) {
-			console.log('In setConfigMap, key_name is: ');
-			console.log(key_name);
 			if (input_map.hasOwnProperty(key_name)) {
 				config_map[key_name] = input_map[key_name];
 			} else {
@@ -66,8 +62,6 @@ spa.util = (function() {
 				throw error;
 			}
 		}
-		console.log('After spa.util.setConfigMap runs, config_map is: ');
-		console.log(config_map);
 	};
 	//End Public method /setConfigMap/
 	
