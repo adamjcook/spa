@@ -16,7 +16,7 @@ spa.fake = (function() {
 	
 	'use strict';
 	
-	var getPeopleList;
+	var peopleList;
 	var fakeIdSerial;
 	var makeFakeId;
 	var mockSio;
@@ -27,8 +27,7 @@ spa.fake = (function() {
 		return 'id_' + String(fakeIdSerial++);
 	};
 	
-	getPeopleList = function() {
-		return [
+	peopleList = [
 		  {name: 'Betty', _id: 'id_01', 
 		   css_map: {top: 20, left: 20, 
 		     'background-color': 'rgb(128, 128, 128)'}
@@ -45,13 +44,14 @@ spa.fake = (function() {
 		   css_map: {top: 140, left: 20, 
 		     'background-color': 'rgb(192, 128, 128)'}
 		  },
-		];
-	};
+	];
 	
 	mockSio = (function() {
 		var on_sio;
 		var emit_sio;
+		var send_listchange;
 		var callback_map = {};
+		var emit_mock_msg;
 		
 		on_sio = function(msg_type, callback) {
 			callback_map[msg_type] = callback;
@@ -61,17 +61,82 @@ spa.fake = (function() {
 			// Respond to 'adduser' event with 'userupdate'
 			// Callback after a 3 second delay
 			//
+			var person_map;
+			var i;
+			
 			if (msg_type === 'adduser' && callback_map.userupdate) {
 				setTimeout(function() {
-					callback_map.userupdate(
-							[{_id: makeFakeId(),
-							  name: data.name,
-							  css_map: data.css_map
-							}]
-					);
+					person_map = {
+							_id     : makeFakeId(),
+							name    : data.name,
+							css_map : data.css_map
+					};
+					peopleList.push(person_map);
+					callback_map.userupdate([person_map]);
 				}, 3000);
 			}
+			
+			// Respond to 'updatechat' event with an 'updatechat'
+			// callback after a 2 second delay. Echo back user info.
+			if (msg_type === 'updatechat' && callback_map.updatechat) {
+				setTimeout(function() {
+					var user = spa.model.people.get_user();
+					callback_map.updatechat([{
+						dest_id   : user.id,
+						dest_name : user.name,
+						sender_id : data.dest_id,
+						msg_text  : 'Thanks for the note, ' + user.name
+					}]);
+				}, 2000)
+			}
+			
+			if (msg_type === 'leavechat') {
+				callback_map = {};
+			}
+			
+			if (msg_type === 'updateavatar' && callback_map.listchange) {
+				for (i = 0; i < peopleList.length; i++) {
+					if (peopleList[i].id === data.person_id) {
+						peopleList[i].css_map = data.css_map;
+						break;
+					}
+				}
+				callback_map.listchange(peopleList);
+			}
 		};
+		
+		emit_mock_msg = function() {
+			setTimeout(function() {
+				var user = spa.model.people.get_user();
+				if (callback_map.updatechat) {
+					callback_map.updatechat([{
+						dest_id   : user.id,
+						dest_name : user.name,
+						sender_id : 'id_04',
+						msg_text  : 'Hi there ' + user.name + '! Wilma here.'
+					}]);
+				} else {
+					emit_mock_msg();
+				}
+			}, 8000);
+		}
+		
+		// Try once per second to use listchange callback.
+		// Stop trying after first success.
+		//
+		send_listchange = function() {
+			setTimeout(function() {
+				if (callback_map.listchange) {
+					callback_map.listchange([peopleList]);
+					emit_mock_msg();
+				} else {
+					send_listchange();
+				}
+			}, 1000);
+		};
+		
+		// Start the process
+		send_listchange();
 		
 		return {
 			emit: emit_sio,
@@ -81,7 +146,6 @@ spa.fake = (function() {
 	}());
 	
 	return {
-		getPeopleList: getPeopleList,
 		mockSio: mockSio
 	};
 	
