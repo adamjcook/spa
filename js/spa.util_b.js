@@ -51,7 +51,7 @@ spa.util_b = (function() {
 	// number of characters.
 	//
 	encodeHtml = function(input_arg_str, exclude_map) {
-		var input_str = String(input_arg_string);
+		var input_str = String(input_arg_str);
 		var regex;
 		var lookup_map;
 		
@@ -79,5 +79,11 @@ spa.util_b = (function() {
 	// End utility method /getEmSize/
 	
 	// ----------END UTILITY METHODS----------
+	
+	return {
+		decodeHtml : decodeHtml,
+		encodeHtml : encodeHtml,
+		getEmSize  : getEmSize
+	};
 	
 }());

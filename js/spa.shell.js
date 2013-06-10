@@ -301,11 +301,17 @@ spa.shell = (function() {
 		
 		// Configure and initialize feature modules
 		spa.chat.configModule({
-			set_chat_anchor: setChatAnchor,
-			chat_model: spa.model.chat,
-			people_model: spa.model.people
+			set_chat_anchor : setChatAnchor,
+			chat_model      : spa.model.chat,
+			people_model    : spa.model.people
 		});
 		spa.chat.initModule(jqueryMap.$container);
+		
+		spa.avtr.configModule({
+			chat_model   : spa.model.chat,
+			people_model : spa.model.people
+		});
+		spa.avtr.initModule(jqueryMap.$nav);
 		
 		// Handle URI anchor change events.
 		// This is done /after/ all feature modules are configured and
@@ -318,9 +324,8 @@ spa.shell = (function() {
 		.bind('hashchange', onHashchange)
 		.trigger('hashchange');
 		
-		$(document)
-		.on('spa-login', onLogin)
-		.on('spa-logout', onLogout);
+		$.gevent.subscribe($container, 'spa-login', onLogin);
+		$.gevent.subscribe($container, 'spa-logout', onLogout);
 		
 		jqueryMap.$acct
 		.text('Please sign-in')

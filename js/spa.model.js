@@ -67,7 +67,7 @@ spa.model = (function() {
 		stateMap.user.css_map = user_map.css_map;
 		stateMap.people_cid_map[user_map._id] = stateMap.user;
 		chat.join();
-		$.event.trigger('spa-login', [stateMap.user]);
+		$.gevent.publish('spa-login', [stateMap.user]);
 	};
 	
 	makePerson = function(person_map) {
@@ -198,7 +198,7 @@ spa.model = (function() {
 			is_removed = removePerson(user);
 			stateMap.user = stateMap.anon_user;
 			
-			$.event.trigger('spa-logout', [user]);
+			$.gevent.publish('spa-logout', [user]);
 			return is_removed;
 		};
 		
@@ -317,7 +317,7 @@ spa.model = (function() {
 		
 		_publish_listchange = function(arg_list) {
 			_update_list(arg_list);
-			$.event.trigger('spa-listchange', [arg_list]);
+			$.gevent.publish('spa-listchange', [arg_list]);
 		};
 		
 		_publish_updatechat = function(arg_list) {
@@ -331,7 +331,7 @@ spa.model = (function() {
 				set_chatee(msg_map.sender_id);
 			}
 			
-			$.event.trigger('spa-updatechat', [msg_map]);
+			$.gevent.publish('spa-updatechat', [msg_map]);
 		};
 		// End internal methods
 		
@@ -400,7 +400,7 @@ spa.model = (function() {
 				new_chatee = null;
 			}
 			
-			$.event.trigger('spa-setchatee', 
+			$.gevent.publish('spa-setchatee', 
 				{old_chatee : chatee, new_chatee : new_chatee}
 			);
 			chatee = new_chatee;
