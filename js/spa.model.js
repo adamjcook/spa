@@ -25,7 +25,7 @@ spa.model = (function() {
 			user           : null,
 			is_connected   : false
 	};
-	var isFakeData = true;
+	var isFakeData = false;
 	var personProto;
 	var makeCid;
 	var clearPeopleDb;
