@@ -7,9 +7,10 @@
 
 /*global require, process, module, ObjectID */
 
-var crud = require('./lib/crud');
+var chat = require('./lib/chat.js');
+var crud = require('./lib/crud.js');
 
-module.exports = function(app) {
+module.exports = function(app, server) {
   var routes = {
     set: function() {
       app.all('/:object/*?', function(req, res, next) {
@@ -20,7 +21,7 @@ module.exports = function(app) {
           next();
         }
         else {
-          res.send(req.params.object + " is not a valid object type");
+          res.send(req.params.object + " is not a valid object type.");
         }
       });
       
@@ -86,5 +87,6 @@ module.exports = function(app) {
     }
   };
   
+  chat.connect(server);
   return routes;
 };

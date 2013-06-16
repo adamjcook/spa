@@ -36,7 +36,6 @@ spa.shell = (function() {
 				  + '<div class="spa-shell-main-content"></div>'
 				+ '</div>'
 				+ '<div class="spa-shell-foot"></div>'
-				+ '<div class="spa-shell-modal"></div>'
 	};
 	var stateMap = {
 			$container: undefined,

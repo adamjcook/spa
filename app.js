@@ -4,14 +4,17 @@
 
 var express = require('express');
 var app = express();
-var routes  = require('./routes.js')(app);
+var http = require('http');
+var server = http.createServer(app).listen(3000);
+var routes  = require('./routes.js')(app, server);
 
 //Configuration
 app.configure(function () {
   app.use(express.bodyParser());
   app.use(express.methodOverride());
-  app.use(app.router);
+  // Ordering of below app.use statements are important
   app.use(express.static( __dirname + '/public'));
+  app.use(app.router);
 });
 
 app.configure('development', function() {
@@ -23,6 +26,4 @@ app.configure('production', function() {
 });
 
 routes.set();
-
-var server = app.listen(3000);
 console.log("Express server listening on port %d in %s mode", server.address().port, app.settings.env);
